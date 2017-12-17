@@ -22,22 +22,22 @@ from sklearn.model_selection import train_test_split
 from keras.datasets import imdb
 
 #dataset
-max_features=100
-maxlen=80
+max_features=100#20000
+maxlen=80#100
 
 n_samples=0 #sample number (don't assign it manually)
 
 # Convolution
-kernel_size = 5
-filters = 64
-pool_size = 4
+kernel_size = 5#5
+filters = 64#64
+pool_size = 4#4
 #model
-EMBEDDING_SIZE=80
-N_NEURONS=128
-OUTPUT_DIM=1
+EMBEDDING_SIZE=80#128
+N_NEURONS=128#70
+OUTPUT_DIM=1#1
 #Training
-BATCH_SIZE = 1#32
-N_EPOCH=1
+BATCH_SIZE = 1#30
+N_EPOCH=1#2
 
 
 def tokenize(string):
