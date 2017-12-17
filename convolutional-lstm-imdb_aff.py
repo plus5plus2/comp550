@@ -162,12 +162,6 @@ model.add(Conv1D(filters,
 model.add(LSTM(N_NEURONS, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(OUTPUT_DIM, activation='sigmoid'))
 
-
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
-
-
 # try using different optimizers and different optimizer configs
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
