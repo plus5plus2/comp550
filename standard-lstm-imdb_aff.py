@@ -21,19 +21,19 @@ from sklearn.model_selection import train_test_split
 from keras.datasets import imdb
 
 #dataset
-max_features=100
-maxlen=80
+max_features=100#20000
+maxlen=80#80
 
 n_samples=0 #sample number (don't assign it manually)
 
 
 #model
-EMBEDDING_SIZE=80
-N_NEURONS=128
-OUTPUT_DIM=1
+EMBEDDING_SIZE=80#128
+N_NEURONS=128#128
+OUTPUT_DIM=1#1
 #Training
 BATCH_SIZE = 1#32
-N_EPOCH=1
+N_EPOCH=1#15
 
 
 def tokenize(string):
