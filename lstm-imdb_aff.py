@@ -59,6 +59,7 @@ OUTPUT_DIM=1
 BATCH_SIZE = args.batch
 N_EPOCH=args.epoch
 
+ds4afd=20000#controlling the aff dataset size
 
 def tokenize(string):
     #removing characters except english letter and - 
@@ -99,6 +100,8 @@ def load_in_afd():
     global max_features
     global n_samples
     
+    global n
+    
     n_samples=0
     word_freqs = collections.Counter()  #word frequency
      
@@ -129,7 +132,9 @@ def load_in_afd():
             for word in words:
                 if(len(word_freqs)<max_features):
                     word_freqs[word] += 1
-                
+            n=n-1
+            if n==0:
+                break   
             
     
     #only consider the most freqent max_features words 
