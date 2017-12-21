@@ -6,17 +6,20 @@ Created on Thu Dec 07 15:44:19 2017
 """
 
 
+import os
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="either sl or cl",action="store",dest="model",type=str.lower)
 parser.add_argument("--source", help="either imdb or afd",action="store",dest="source",type=str.lower)
-parser.add_argument("--train_size", action="store", dest="train_size", type=int, default=25)
+parser.add_argument("--train_size", action="store", dest="train_size", type=int, default=10000)
 parser.add_argument("--batch", action="store", dest="batch", type=int, default=100)
 parser.add_argument("--epoch", action="store", dest="epoch", type=int, default=2)
-parser.add_argument("--layers", action="store", dest="layers", type=int, default=2)
+parser.add_argument("--layers", action="store", dest="layers", type=int, default=1)
 parser.add_argument("--neurals", action="store", dest="neurals", type=int, default=128)
 args = parser.parse_args()
-print "Parsed arguments: " + str(args)
+args_str = "Parsed arguments: " + str(args)
+print args_str
+os.system('echo "' + args_str + '" >> test.log')
 
 
 from keras.models import Sequential
@@ -25,6 +28,7 @@ from keras.layers import Conv1D, MaxPooling1D
 from keras.layers import LSTM
 import csv
 from random import randint
+import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
@@ -62,17 +66,19 @@ def tokenize(string):
     #tokenize,lemmatize and remove stopwords 
     tokens=tokenizer.tokenize(string)
     lemmatizer = WordNetLemmatizer()
-    stopword = stopwords.words('english') 
-    filtered=[]
+    #stopword = stopwords.words('english') 
+    #filtered=[]
     for token in tokens:
         token=lemmatizer.lemmatize(token)
-        if token not in stopword:
-            filtered.append(token.encode("ascii"))
+        #if token not in stopword:
+        filtered.append(token.encode("ascii"))
     return filtered
 
 def load_in_imdb():
     
     (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
+    print ("original x_train: ", x_train.shape)
+    print ("original x_test: ", x_test.shape)
     x_train=x_train[:args.train_size]
     x_test=x_test[:TEST_SIZE]
     y_train=y_train[:args.train_size]
@@ -99,7 +105,7 @@ def load_in_afd():
     rawX=[]
     #dataS=[] #summary row[8]
     rawY=[]
-    with open('Reviews/mini.csv') as f:
+    with open('../Reviews.csv') as f:
         f_csv = csv.reader(f)
         headers = next(f_csv)
         for row in f_csv:
@@ -156,8 +162,14 @@ def load_in_afd():
         i += 1
     #pad sequences
     dataX = sequence.pad_sequences(dataX, maxlen=maxlen)
-    
-    return train_test_split(dataX, dataY, test_size=0.2,random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(dataX, dataY, test_size=0.2,random_state=42)
+    print ("original x_train: ", x_train.shape)
+    print ("original x_test: ", x_test.shape)
+    x_train=x_train[:args.train_size]
+    x_test=x_test[:TEST_SIZE]
+    y_train=y_train[:args.train_size]
+    y_test=y_test[:TEST_SIZE]
+    return x_train, x_test, y_train, y_test
     
 if args.source == "imdb":
     x_train, x_test, y_train, y_test = load_in_imdb()
@@ -173,6 +185,8 @@ def create_standard_model():
     global max_features
     model = Sequential()
     model.add(Embedding(max_features, output_dim=EMBEDDING_SIZE,input_length=maxlen))
+    for i in range(args.layers-1):
+        model.add(LSTM(N_NEURONS, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
     model.add(LSTM(N_NEURONS, dropout=0.2, recurrent_dropout=0.2))
     model.add(Dense(OUTPUT_DIM, activation='sigmoid'))
     
@@ -192,6 +206,8 @@ def create_convo_model():
                      padding='valid',
                      activation='relu',
                      strides=1))
+    for i in range(args.layers-1):
+        model.add(LSTM(N_NEURONS, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
     model.add(LSTM(N_NEURONS, dropout=0.2, recurrent_dropout=0.2))
     model.add(Dense(OUTPUT_DIM, activation='sigmoid'))
     
