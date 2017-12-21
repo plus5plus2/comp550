@@ -59,7 +59,7 @@ OUTPUT_DIM=1
 BATCH_SIZE = args.batch
 N_EPOCH=args.epoch
 
-ds4afd=20000#controlling the aff dataset size
+n=20000#controlling the aff dataset size
 
 def tokenize(string):
     #removing characters except english letter and - 
