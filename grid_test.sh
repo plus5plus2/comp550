@@ -85,10 +85,6 @@ done
 
 
 
-
-exit
-
-
 for para in 1 5 10 15 25
 do
     command="python lstm-imdb_aff.py --model cl --source afd --epoch $para"

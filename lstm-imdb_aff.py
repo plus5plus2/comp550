@@ -2,7 +2,6 @@
 """
 Created on Thu Dec 07 15:44:19 2017
 
-@author: Plus7
 """
 
 
